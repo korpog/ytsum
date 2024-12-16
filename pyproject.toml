@@ -40,7 +40,7 @@ build-backend = "poetry.core.masonry.api"
 name = "summ"
 version = "1.0.0"
 description = "YT summary app using language models"
-authors = ["Your Name <your.email@example.com>"]
+authors = [Korneliusz Pogorzelczyk]
 
 [tool.poetry.dependencies]
 python = "^3.12"

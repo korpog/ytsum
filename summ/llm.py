@@ -15,7 +15,7 @@ def get_youtube_title(url: str) -> Optional[str]:
     try:
         response = requests.get(url)
         title = re.search(r'<title>(.*?) - YouTube</title>', response.text)
-        return title.group(1) if title else None
+        return html.unescape(title.group(1)) if title else None
     except Exception as e:
         print(f"Error getting video title {e}")
         return None
@@ -78,7 +78,7 @@ def text_chunking(text: str, max_chunk_length: int = 1024, overlap: int = 200) -
     return chunks
 
 
-def summarize_text(text: str, max_length: int = 100, model_name: str = MODEL_NAME) -> str:
+def summarize_text(text: str, max_length: int = 50, model_name: str = MODEL_NAME) -> str:
     """Summarize text using the specified model"""
     summarizer = get_summarizer(model_name)
     if not summarizer:
@@ -89,7 +89,7 @@ def summarize_text(text: str, max_length: int = 100, model_name: str = MODEL_NAM
     summaries: List[str] = []
     for chunk in chunks:
         try:
-            summary = summarizer(chunk, max_length=max_length, min_length=30, do_sample=False)[
+            summary = summarizer(chunk, max_length=max_length, min_length=15, do_sample=False)[
                 0]['summary_text']
             summaries.append(summary)
         except Exception as e:
