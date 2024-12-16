@@ -1,0 +1,14 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./instance:/app/instance
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=summ
+    restart: always

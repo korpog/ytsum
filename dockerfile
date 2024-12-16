@@ -1,20 +1,33 @@
-# Use the official Python image with version 3.9 (or specify your preferred version)
-FROM python:3.9-slim
+# Dockerfile
+FROM python:3.12-slim
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy requirements.txt before other files for efficient caching
-COPY requirements.txt /app/requirements.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy pyproject.toml and install dependencies
+COPY pyproject.toml pyproject.toml
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi
 
-# Copy the rest of the application code
-COPY . /app
+# Copy the entire project
+COPY . .
 
-# Expose port 5000 for the Flask app
+# Create instance directory if it doesn't exist
+RUN mkdir -p instance
+
+# Set environment variables
+ENV FLASK_APP=summ
+ENV FLASK_ENV=production
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Expose the port the app runs on
 EXPOSE 5000
 
-# Command to run the app
-CMD ["python", "app.py"]
+# Run the application
+CMD ["flask", "run"]
