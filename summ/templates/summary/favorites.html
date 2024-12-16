@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block header %}
+<h1 class="pb-1 mb-3 text-center fw-bold">My Favorite Summaries</h1>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            {% if summaries %}
+            <p>Total Favorites: {{ summaries|length }}</p>
+            {% else %}
+            <p class="text-center">No favorite summaries yet</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card border-warning">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>YouTube Title</th>
+                            <th>Channel</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Created by</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for summary in summaries %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('summary.detail', id=summary['id']) }}"
+                                    class="btn btn-sm btn-outline-warning" target="_blank">
+                                    {{ summary['id'] }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ summary['yt_title'] }}
+                                <a href="{{ summary['yt_url'] }}" class="btn btn-sm btn-outline-danger ms-1"
+                                    target="_blank">
+                                    <i class="bi bi-youtube"></i>
+                                </a>
+                            </td>
+                            <td>{{ summary['yt_channel_name'] }}</td>
+                            <td>{{ summary['category_name'] }}</td>
+                            <td>{{ summary['created_at'].strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ summary['username'] }}</td>
+                            <td>
+                                <form action="{{ url_for('summary.remove_favorite', id=summary['id']) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-heart-fill"></i> Remove Favorite
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

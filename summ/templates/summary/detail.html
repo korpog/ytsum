@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1 class="pb-2 mb-4 text-center fw-bold">{% block title %}Summary Details{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card border-warning mb-4">
+        <div class="card-header bg-warning-subtle d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ summary['yt_title'] }}</h2>
+            <div class="btn-group" role="group">
+                <a href="{{ summary['yt_url'] }}" class="btn btn-sm btn-outline-warning" target="_blank">
+                    <i class="bi bi-youtube me-1"></i>Watch on YouTube
+                </a>
+                {% if g.user['id'] == summary['author_id'] %}
+                <a href="{{ url_for('summary.update', id=summary['id']) }}" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row text-muted mb-4">
+                <div class="col-6 col-md-3">
+                    <small>Created by</small>
+                    <div class="fw-bold">{{ summary['username'] }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <small>Date</small>
+                    <div class="fw-bold">{{ summary['created_at'].strftime('%Y-%m-%d') }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <small>Category</small>
+                    <div class="fw-bold">{{ summary['category_name'] }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <small>Channel</small>
+                    <div class="fw-bold">{{ summary['yt_channel_name'] }}</div>
+                </div>
+            </div>
+
+            <h3 class="mb-3">Summary</h3>
+            <p class="card-text mb-4">{{ summary['summary_text'] }}</p>
+
+            <div class="d-grid">
+                <button class="btn btn-outline-warning" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTranscript" aria-expanded="false" aria-controls="collapseTranscript">
+                    <i class="bi bi-file-text me-2"></i>Show Transcript
+                </button>
+            </div>
+
+            <div class="collapse mt-3" id="collapseTranscript">
+                <div class="card card-body">
+                    {{ summary['transcript'] }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

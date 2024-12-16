@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1 class="pb-1 mb-4 text-center fw-bold">{% block title %}Create New Summary{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card border-warning">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="yt_url" class="form-label">YouTube Video URL</label>
+                    <input name="yt_url" id="yt_url" value="{{ request.form['yt_url'] }}" class="form-control"
+                        type="url" placeholder="https://www.youtube.com/watch?v=example" required>
+                    <div class="form-text text-muted">
+                        <i class="bi bi-info-circle me-1"></i>Enter a valid YouTube video URL
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category_name" class="form-label">Video Category</label>
+                    <select name="category_name" id="category_name" class="form-select"
+                        aria-label="Select video category" required>
+                        <option value="" disabled selected>Choose a category</option>
+                        {% for category in categories %}
+                        <option value="{{ category['id'] }}">{{ category['category_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-play-circle me-2"></i>Summarize Video
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

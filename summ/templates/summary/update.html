@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1 class="pb-1 mb-4 text-center fw-bold">{% block title %}Edit "{{ summary['yt_title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card border-warning mb-4">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="yt_title" class="form-label">YouTube Title</label>
+                    <input name="yt_title" id="yt_title" value="{{ request.form['yt_title'] or summary['yt_title'] }}"
+                        class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="yt_channel_name" class="form-label">YouTube Channel Name</label>
+                    <input name="yt_channel_name" id="yt_channel_name"
+                        value="{{ request.form['yt_channel_name'] or summary['yt_channel_name'] }}"
+                        class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="summary_text" class="form-label">Summary Text</label>
+                    <textarea name="summary_text" id="summary_text" class="form-control" rows="8"
+                        required>{{ summary['summary_text'] }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category_name" class="form-label">Video Category</label>
+                    <select name="category_name" id="category_name" class="form-select"
+                        aria-label="Select video category" required>
+                        <option value="{{ summary['category_id'] }}" selected>
+                            {{ summary['category_name'] }}
+                        </option>
+                        {% for category in categories %}
+                        {% if category['id'] != summary['category_id'] %}
+                        <option value="{{ category['id'] }}">{{ category['category_name'] }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-danger">
+        <div class="card-body">
+            <h5 class="card-title text-danger">Danger Zone</h5>
+            <p class="card-text text-muted">Once you delete this summary, it cannot be recovered.</p>
+            <form action="{{ url_for('summary.delete', id=summary['id']) }}" method="post">
+                <button class="btn btn-outline-danger" type="submit"
+                    onclick="return confirm('Are you sure you want to delete this summary?');">
+                    <i class="bi bi-trash me-2"></i>Delete Summary
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

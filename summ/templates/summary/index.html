@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1 class="pb-1 mb-3 text-center fw-bold">{% block title %}Browse Summaries{% endblock %}</h1>
+<p class="text-center text-muted">Click ID for summary details</p>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <form method="get" action="{{ url_for('summary.index') }}" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category['category_name'] }}" {% if category['category_name']==selected_category
+                        %} selected {% endif %}>
+                        {{ category['category_name'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search by video title"
+                    value="{{ search_query or '' }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-outline-warning">Search</button>
+                <a href="{{ url_for('summary.index') }}" class="btn btn-outline-warning">Reset</a>
+            </div>
+        </div>
+    </form>
+    <div class="card border-warning">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table">
+                        <tr>
+                            <th scope="col" class="text-center">ID</th>
+                            <th scope="col">YouTube Title</th>
+                            <th scope="col">Channel</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Created by</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for summary in summaries %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="{{ url_for('summary.detail', id=summary['id']) }}"
+                                    class="btn btn-sm btn-outline-warning" target="_blank">
+                                    {{ summary['id'] }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ summary['yt_title'] }}
+                                <a href="{{ summary['yt_url'] }}" class="btn btn-sm btn-outline-danger ms-1"
+                                    target="_blank">
+                                    <i class="bi bi-youtube"></i>
+                                </a>
+                                {% if g.user %}
+                                {% if summary['id'] not in user_favorites %}
+                                <form action="{{ url_for('summary.add_favorite', id=summary['id']) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-heart"></i> Favorite
+                                    </button>
+                                </form>
+                                {% else %}
+                                <form action="{{ url_for('summary.remove_favorite', id=summary['id']) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-heart-fill"></i> Unfavorite
+                                    </button>
+                                </form>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>{{ summary['yt_channel_name'] }}</td>
+                            <td>{{ summary['category_name'] }}</td>
+                            <td>{{ summary['created_at'].strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ summary['username'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
