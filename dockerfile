@@ -1,4 +1,4 @@
-# Dockerfile
+# Use Python 3.12 slim image as base
 FROM python:3.12-slim
 
 # Set working directory
@@ -9,16 +9,16 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy pyproject.toml and install dependencies
-COPY pyproject.toml pyproject.toml
-RUN pip install poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+# Copy requirements file
+COPY requirements.txt requirements.txt
 
-# Copy the entire project
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application
 COPY . .
 
-# Create instance directory if it doesn't exist
+# Create instance directory
 RUN mkdir -p instance
 
 # Set environment variables
@@ -26,7 +26,7 @@ ENV FLASK_APP=summ
 ENV FLASK_ENV=production
 ENV FLASK_RUN_HOST=0.0.0.0
 
-# Expose the port the app runs on
+# Expose the port
 EXPOSE 5000
 
 # Run the application
